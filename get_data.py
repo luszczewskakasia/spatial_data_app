@@ -10,14 +10,8 @@ states_us = gdf["attr_POOState"]
 
 gdf['state'] = states_us.replace(to_replace="US-", value="", regex=True)
 gdf['month'] = gdf['attr_FireDiscoveryDateTime'].dt.month
+
 gdf['acres'] = gdf['attr_IncidentSize']
-
-new_states = []
-for i in states_us:
-    if i.startswith("US-"):
-        i = i.replace("US-", "")
-    new_states.append(i)
-
 
 tab = []
 for i in states_us:
@@ -34,8 +28,6 @@ tab_sort = []
 for i in sort2:
     if i not in tab_sort:
         tab_sort.append(i)
-
-# print(tab_sort)
 
 states = {
     'AK': '2',
@@ -138,16 +130,24 @@ for i in [6, 7, 8, 9, 10]:
     for j in sorted_months.values():
         months_sum.append(j)
 
-burnt_areas = gdf.groupby(['state', 'month']).acres.sum().reset_index()
-burnt_areas['number of fires'] = gdf.groupby(['state', 'month']).acres.count().reset_index()['acres']
-burnt_areas = burnt_areas.sort_values(by="month")
-burnt_areas = burnt_areas.reset_index(drop=True)
-print(burnt_areas)
+# number_to_months = {6: 'June',
+#                     7: 'July',
+#                     8: 'August',
+#                     9: 'September',
+#                     10: 'October'}
+#
+# gdf['month'] = gdf['month'].replace(number_to_months)
+gdf_fires = gdf.groupby(['state', 'month']).acres.sum().reset_index()
+gdf_fires['number of fires'] = gdf.groupby(['state', 'month']).acres.count().reset_index()['acres']
+gdf_fires = gdf_fires.sort_values(by="month")
+gdf_fires = gdf_fires.reset_index(drop=True)
+gdf_fires.to_csv(f'gdf_fires.csv', index=False)
+# print(gdf_fires.head())
     #
     # print(f"This is {i} month")
     # print(months.values(), '\n')
     #print(area, '\n')
 
     # months_df = pd.DataFrame(months_sum, index=[0])
-    # # months_df.to_csv(f'df_{i}.csv', index=False)
+
     # print(months_df.head())
