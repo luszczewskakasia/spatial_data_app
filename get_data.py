@@ -29,6 +29,60 @@ for i in sort2:
     if i not in tab_sort:
         tab_sort.append(i)
 
+areas_1 = {
+        'AK': 131171,
+        'AL': 1477953,
+        'AR': 135771,
+        'AZ': 294207,
+        'CA': 403466,
+        'CO': 268431,
+        'CT': 12542,
+        'DC': 158,
+        'DE': 5047,
+        'FL': 138887,
+        'GA': 148959,
+        'HI': 16635,
+        'IA': 144669,
+        'ID': 214045,
+        'IL': 143793,
+        'IN': 92789,
+        'KS': 211754,
+        'KY': 102269,
+        'LA': 111898,
+        'MA': 20202,
+        'MD': 25142,
+        'ME': 79883,
+        'MI': 146435,
+        'MN': 206232,
+        'MO': 178040,
+        'MS': 121531,
+        'MT': 376962,
+        'NC': 125920,
+        'ND': 178711,
+        'NE': 198974,
+        'NH': 23187,
+        'NJ': 19047,
+        'NM': 314161,
+        'NV': 284332,
+        'NY': 122057,
+        'OH': 105829,
+        'OK': 177660,
+        'OR': 248608,
+        'PA': 115883,
+        'RI': 2678,
+        'SC': 77857,
+        'SD': 196350,
+        'TN': 106798,
+        'TX': 676587,
+        'UT': 212818,
+        'VA': 23817,
+        'VT': 23817,
+        'WA': 172119,
+        'WI': 140268,
+        'WV': 62259,
+        'WY': 251470
+}
+
 states = {
     'AK': '2',
     'AL': '1',
@@ -86,7 +140,27 @@ states = {
     'WV': '0',
     'WY': '0'
 }
-
+areas = {
+        'AK': 131171,
+        'AL': 1477953,
+        'AZ': 294207,
+        'CA': 403466,
+        'CO': 268431,
+        'HI': 16635,
+        'ID': 214045,
+        'IL': 143793,
+        'LA': 111898,
+        'MA': 20202,
+        'MI': 146435,
+        'MN': 206232,
+        'MS': 121531,
+        'MT': 376962,
+        'NM': 314161,
+        'OR': 248608,
+        'TX': 676587,
+        'UT': 212818,
+        'WA': 172119,
+}
 df = pd.DataFrame(list(states.items()), columns=['STATE ID', 'FIRE'])
 df.to_csv('df.csv', index=False)
 # print(df.head())
@@ -108,12 +182,6 @@ for state in states_us:
 #
 # print(months)
 
-#sum of burnt areas per state
-#jedynie potrzebna jest ta liczba elementów do zsumowania
-
-
-
-#jesli wartosc jest = 0, to wtedy wywal to ze słownika
 months_sum = []
 for i in [6, 7, 8, 9, 10]:
     months = {}
@@ -130,24 +198,11 @@ for i in [6, 7, 8, 9, 10]:
     for j in sorted_months.values():
         months_sum.append(j)
 
-# number_to_months = {6: 'June',
-#                     7: 'July',
-#                     8: 'August',
-#                     9: 'September',
-#                     10: 'October'}
-#
-# gdf['month'] = gdf['month'].replace(number_to_months)
 gdf_fires = gdf.groupby(['state', 'month']).acres.sum().reset_index()
+gdf_fires['burnt area [km2]'] = gdf_fires['acres'] * 0.004
 gdf_fires['number of fires'] = gdf.groupby(['state', 'month']).acres.count().reset_index()['acres']
+gdf_fires['state area [km2]'] = gdf_fires['state'].map(areas, na_action='ignore')
+gdf_fires['burnt area [%]'] = (gdf_fires['burnt area [km2]'] / gdf_fires['state area [km2]']) * 100
 gdf_fires = gdf_fires.sort_values(by="month")
 gdf_fires = gdf_fires.reset_index(drop=True)
 gdf_fires.to_csv(f'gdf_fires.csv', index=False)
-# print(gdf_fires.head())
-    #
-    # print(f"This is {i} month")
-    # print(months.values(), '\n')
-    #print(area, '\n')
-
-    # months_df = pd.DataFrame(months_sum, index=[0])
-
-    # print(months_df.head())
