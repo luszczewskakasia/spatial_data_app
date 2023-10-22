@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 
 from dash import dcc, html
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 
 import plotly.express as px
 
@@ -13,13 +14,15 @@ df = get_data.gdf_fires
 with open("gz_2010_us_040_00_5m_1.json", 'r') as f:
     states = json.load(f)
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets=[dbc.themes.LUX]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 colors = {
     'background': '##ebeced',
     'text': '#000000'
 }
 
+text = str('Burnt area in [km') + '\u00B2' + str(']')
 app.layout = html.Div(
     children=[
         html.H3(
@@ -64,7 +67,7 @@ app.layout = html.Div(
                 dcc.Dropdown(id='bardropdown',
                              options=[
                                  {'label': 'Burnt area in [%]', 'value': 'burnt area [%]'},
-                                 {'label': 'Burnt area in [km^2]', 'value': 'burnt area [km2]'},
+                                 {'label': text, 'value': 'burnt area [km2]'},
                              ],
                              value='burnt area [km2]',
                              multi=False,
