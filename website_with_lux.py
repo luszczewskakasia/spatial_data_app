@@ -1,10 +1,9 @@
 import json
 import get_data
 
-from dash import Dash, dcc, html
 import plotly.graph_objects as go
 
-from dash import dcc, html
+from dash import dcc, html, Dash
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
@@ -14,7 +13,6 @@ df = get_data.gdf_fires
 with open("gz_2010_us_040_00_5m_1.json", 'r') as f:
     states = json.load(f)
 
-# external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 external_stylesheets = [dbc.themes.LUX]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 colors = {
@@ -38,7 +36,13 @@ app.layout = dbc.Container([
             html.H3("Wildfires in the USA",
                     className='text-center text-primary mb-4'),
             html.H5(
-                "Below you can see a simple app for spatial data visualization. Choose options below to see desired data.")
+                "Below you can see a simple app for spatial data visualization. Choose options below to see desired data."),
+            # dcc.Checklist(id='checklist', value=df['months']
+                          # dodać tutaj, że wybierając dane miesiace/stany, tworzy się mediana
+                          # options=[{'label': x, 'value': x}
+                          #          for x in df['months']],
+                          # labelClassName="mr-3"),
+
         ], width=2, style={'backgroundColor': 'rgb(237, 238, 240)'}),
 
         dbc.Col([
@@ -59,7 +63,7 @@ app.layout = dbc.Container([
                            7: 'July',
                            8: 'August',
                            9: 'September',
-                           10: 'October'},
+                           10: 'October'}
                 ),
                 dbc.Col([
                     dcc.Graph(

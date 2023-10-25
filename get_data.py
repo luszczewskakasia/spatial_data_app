@@ -3,9 +3,7 @@ import pandas as pd
 
 # the number of fires in each state is needed, within a year, and then, the map with this data is needed
 gdf = gpd.read_file("WFIGS_Current_Interagency_Fire_Perimeters.geojson")
-gdf.to_file("WFIGS_Interagency_Fire_Perimeters.geojson", driver="GeoJSON")
 
-gdf_states = gpd.read_file("gz_2010_us_040_00_5m.json")
 states_us = gdf["attr_POOState"]
 
 gdf['state'] = states_us.replace(to_replace="US-", value="", regex=True)
@@ -13,74 +11,59 @@ gdf['month'] = gdf['attr_FireDiscoveryDateTime'].dt.month
 
 gdf['acres'] = gdf['attr_IncidentSize']
 
-tab = []
-for i in states_us:
-    if i not in tab:
-        tab.append(i)
-
-# print(tab)
-
-sort = gdf.sort_values(by=['poly_IncidentName'])
-sort2 = gdf['poly_IncidentName']
-# print(sort)
-
-tab_sort = []
-for i in sort2:
-    if i not in tab_sort:
-        tab_sort.append(i)
 
 areas_1 = {
-        'AK': 131171,
-        'AL': 1477953,
-        'AR': 135771,
-        'AZ': 294207,
-        'CA': 403466,
-        'CO': 268431,
-        'CT': 12542,
-        'DC': 158,
-        'DE': 5047,
-        'FL': 138887,
-        'GA': 148959,
-        'HI': 16635,
-        'IA': 144669,
-        'ID': 214045,
-        'IL': 143793,
-        'IN': 92789,
-        'KS': 211754,
-        'KY': 102269,
-        'LA': 111898,
-        'MA': 20202,
-        'MD': 25142,
-        'ME': 79883,
-        'MI': 146435,
-        'MN': 206232,
-        'MO': 178040,
-        'MS': 121531,
-        'MT': 376962,
-        'NC': 125920,
-        'ND': 178711,
-        'NE': 198974,
-        'NH': 23187,
-        'NJ': 19047,
-        'NM': 314161,
-        'NV': 284332,
-        'NY': 122057,
-        'OH': 105829,
-        'OK': 177660,
-        'OR': 248608,
-        'PA': 115883,
-        'RI': 2678,
-        'SC': 77857,
-        'SD': 196350,
-        'TN': 106798,
-        'TX': 676587,
-        'UT': 212818,
-        'VA': 23817,
-        'VT': 23817,
-        'WA': 172119,
-        'WI': 140268,
-        'WV': 62259,
-        'WY': 251470
+    'AK': 131171,
+    'AL': 1477953,
+    'AR': 135771,
+    'AZ': 294207,
+    'CA': 403466,
+    'CO': 268431,
+    'CT': 12542,
+    'DC': 158,
+    'DE': 5047,
+    'FL': 138887,
+    'GA': 148959,
+    'HI': 16635,
+    'IA': 144669,
+    'ID': 214045,
+    'IL': 143793,
+    'IN': 92789,
+    'KS': 211754,
+    'KY': 102269,
+    'LA': 111898,
+    'MA': 20202,
+    'MD': 25142,
+    'ME': 79883,
+    'MI': 146435,
+    'MN': 206232,
+    'MO': 178040,
+    'MS': 121531,
+    'MT': 376962,
+    'NC': 125920,
+    'ND': 178711,
+    'NE': 198974,
+    'NH': 23187,
+    'NJ': 19047,
+    'NM': 314161,
+    'NV': 284332,
+    'NY': 122057,
+    'OH': 105829,
+    'OK': 177660,
+    'OR': 248608,
+    'PA': 115883,
+    'RI': 2678,
+    'SC': 77857,
+    'SD': 196350,
+    'TN': 106798,
+    'TX': 676587,
+    'UT': 212818,
+    'VA': 23817,
+    'VT': 23817,
+    'WA': 172119,
+    'WI': 140268,
+    'WV': 62259,
+    'WY': 251470
 }
 
 states = {
@@ -141,30 +124,28 @@ states = {
     'WY': '0'
 }
 areas = {
-        'AK': 131171,
-        'AL': 1477953,
-        'AZ': 294207,
-        'CA': 403466,
-        'CO': 268431,
-        'HI': 16635,
-        'ID': 214045,
-        'IL': 143793,
-        'LA': 111898,
-        'MA': 20202,
-        'MI': 146435,
-        'MN': 206232,
-        'MS': 121531,
-        'MT': 376962,
-        'NM': 314161,
-        'OR': 248608,
-        'TX': 676587,
-        'UT': 212818,
-        'WA': 172119,
+    'AK': 131171,
+    'AL': 1477953,
+    'AZ': 294207,
+    'CA': 403466,
+    'CO': 268431,
+    'HI': 16635,
+    'ID': 214045,
+    'IL': 143793,
+    'LA': 111898,
+    'MA': 20202,
+    'MI': 146435,
+    'MN': 206232,
+    'MS': 121531,
+    'MT': 376962,
+    'NM': 314161,
+    'OR': 248608,
+    'TX': 676587,
+    'UT': 212818,
+    'WA': 172119,
 }
 df = pd.DataFrame(list(states.items()), columns=['STATE ID', 'FIRE'])
 df.to_csv('df.csv', index=False)
-# print(df.head())
-
 
 numbers = {}
 for state in states_us:
@@ -172,15 +153,6 @@ for state in states_us:
         numbers[state] += 1
     else:
         numbers[state] = 1
-
-# months = {}
-# for i in states_us:
-#     if gdf['months'] == 6:
-#         months[i] += 1
-#     else:
-#         months[i] = 1
-#
-# print(months)
 
 months_sum = []
 for i in [6, 7, 8, 9, 10]:
