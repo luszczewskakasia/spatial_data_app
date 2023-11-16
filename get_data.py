@@ -1,8 +1,5 @@
 import geopandas as gpd
-<<<<<<< HEAD
-=======
 import pandas as pd
->>>>>>> d953ac00c2180ba27654654787725e5094b7d213
 
 # the number of fires in each state is needed, within a year, and then, the map with this data is needed
 gdf = gpd.read_file("WFIGS_Current_Interagency_Fire_Perimeters.geojson")
@@ -13,9 +10,6 @@ gdf['state'] = states_us.replace(to_replace="US-", value="", regex=True)
 gdf['month'] = gdf['attr_FireDiscoveryDateTime'].dt.month
 
 gdf['acres'] = gdf['attr_IncidentSize']
-
-<<<<<<< HEAD
-=======
 
 areas_1 = {
     'AK': 131171,
@@ -128,7 +122,7 @@ states = {
     'WV': '0',
     'WY': '0'
 }
->>>>>>> d953ac00c2180ba27654654787725e5094b7d213
+
 areas = {
     'AK': 131171,
     'AL': 1477953,
@@ -150,11 +144,10 @@ areas = {
     'UT': 212818,
     'WA': 172119,
 }
-<<<<<<< HEAD
-=======
+
 df = pd.DataFrame(list(states.items()), columns=['STATE ID', 'FIRE'])
 df.to_csv('df.csv', index=False)
->>>>>>> d953ac00c2180ba27654654787725e5094b7d213
+
 
 numbers = {}
 for state in states_us:
@@ -185,9 +178,6 @@ gdf_fires['number of fires'] = gdf.groupby(['state', 'month']).acres.count().res
 gdf_fires['state area [km2]'] = gdf_fires['state'].map(areas, na_action='ignore')
 gdf_fires['burnt area [%]'] = (gdf_fires['burnt area [km2]'] / gdf_fires['state area [km2]']) * 100
 gdf_fires = gdf_fires.sort_values(by="month")
-<<<<<<< HEAD
 gdf_fires = gdf_fires.reset_index(drop=True)
-=======
 gdf_fires = gdf_fires.reset_index(drop=True)
 gdf_fires.to_csv(f'gdf_fires.csv', index=False)
->>>>>>> d953ac00c2180ba27654654787725e5094b7d213
