@@ -8,7 +8,10 @@ from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
 import plotly.express as px
+<<<<<<< HEAD
 import statistics
+=======
+>>>>>>> d953ac00c2180ba27654654787725e5094b7d213
 
 df = get_data.gdf_fires
 with open("gz_2010_us_040_00_5m_1.json", 'r') as f:
@@ -38,6 +41,7 @@ app.layout = dbc.Container([
                     className='text-center text-primary mb-4'),
             html.H5(
                 "Below you can see a simple app for spatial data visualization. Choose options below to see desired data."),
+<<<<<<< HEAD
 
             html.H6("Choose month to see the median:"),
             dcc.Checklist(
@@ -52,6 +56,13 @@ app.layout = dbc.Container([
             ),
 
             html.H4(id='median-months'),
+=======
+            # dcc.Checklist(id='checklist', value=df['months']
+                          # dodać tutaj, że wybierając dane miesiace/stany, tworzy się mediana
+                          # options=[{'label': x, 'value': x}
+                          #          for x in df['months']],
+                          # labelClassName="mr-3"),
+>>>>>>> d953ac00c2180ba27654654787725e5094b7d213
 
         ], width=2, style={'backgroundColor': 'rgb(237, 238, 240)'}),
 
@@ -167,6 +178,7 @@ def update_bar_graph(selected_month, bardropdown):
     return fig
 
 
+<<<<<<< HEAD
 @app.callback(
     Output('median-months', 'children'),
     Input('my_checklist', 'value')
@@ -178,5 +190,7 @@ def median_months(checked_options):
     return "Median is: ", statistics.median(filtered_df['number of fires'])
 
 
+=======
+>>>>>>> d953ac00c2180ba27654654787725e5094b7d213
 if __name__ == '__main__':
     app.run(debug=True)
