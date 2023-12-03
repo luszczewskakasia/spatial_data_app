@@ -10,10 +10,11 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import statistics
 
-
 df = pd.read_csv('df.csv')
 with open("gz_2010_us_040_00_5m_1.json", 'r') as f:
     states = json.load(f)
+
+selections = set()
 
 external_stylesheets = [dbc.themes.LUX]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
@@ -38,27 +39,22 @@ app.layout = dbc.Container([
             html.H3("Wildfires in the USA",
                     className='text-center text-primary mb-4'),
             html.H5(
-                "Below you can see a simple app for spatial data visualization. Choose options below to see desired data."),
+                "Below you can see a simple app for spatial data visualization. Choose options below to see desired "
+                "data."),
 
             html.H6("Choose month to see the median:"),
             dcc.Checklist(
-                id='my_checklist',  # used to identify component in callback
+                id='my_checklist',
                 options=[
                     {'label': x, 'value': x, 'disabled': False}
-                    for x in df['month'].unique()
+                    for x in df['month_name'].unique()
                 ],
-                value=[6],
-                inline=True
+                value=['June'],
+                inline=True,
+                labelStyle={"display": "flex", "align-items": "center"}
 
             ),
-
             html.H4(id='median-months'),
-            # dcc.Checklist(id='checklist', value=df['months']
-                          # dodać tutaj, że wybierając dane miesiace/stany, tworzy się mediana
-                          # options=[{'label': x, 'value': x}
-                          #          for x in df['months']],
-                          # labelClassName="mr-3"),
-
 
         ], width=2, style={'backgroundColor': 'rgb(237, 238, 240)'}),
 
@@ -179,10 +175,11 @@ def update_bar_graph(selected_month, bardropdown):
     Input('my_checklist', 'value')
 )
 def median_months(checked_options):
-
-    filtered_df = df[df['month'].isin(checked_options)]
-
-    return "Median is: ", statistics.median(filtered_df['number of fires'])
+    filtered_df = df[df['month_name'].isin(checked_options)]
+    if not checked_options:
+        return "Median is: 0"
+    else:
+        return f"Median is: ", statistics.median(filtered_df['number of fires'])
 
 
 if __name__ == '__main__':

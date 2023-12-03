@@ -2,6 +2,7 @@ import geopandas as gpd
 
 # the number of fires in each state is needed, within a year, and then, the map with this data is needed
 gdf = gpd.read_file("WFIGS_Current_Interagency_Fire_Perimeters.geojson")
+states_us = gdf["attr_POOState"]
 
 areas = {
     'AK': 131171,
@@ -25,13 +26,18 @@ areas = {
     'WA': 172119,
 }
 
+# print(len(areas))
 
-# numbers = {}
-# for state in states_us:
-#     if state in numbers:
-#         numbers[state] += 1
-#     else:
-#         numbers[state] = 1
+numbers = {}
+for state in states_us:
+    if state in numbers:
+        numbers[state] += 1
+    else:
+        numbers[state] = 1
+
+
+# for state, count in numbers.items():
+#     print(f' {state}: {numbers[state]}')
 #
 # months_sum = []
 # for i in [6, 7, 8, 9, 10]:
@@ -49,7 +55,8 @@ areas = {
 #     for j in sorted_months.values():
 #         months_sum.append(j)
 
-def make_dataframe():
+
+def make_dataframe(gdf):
     states_us = gdf["attr_POOState"]
     gdf['state'] = states_us.replace(to_replace="US-", value="", regex=True)
 
@@ -78,12 +85,24 @@ def add_columns(gdf_fires):
     return gdf_fires
 
 
+def month_number_to_names(gdf_fires):
+    number_to_months = {6: 'June',
+                        7: 'July',
+                        8: 'August',
+                        9: 'September',
+                        10: 'October'}
+
+    gdf_fires['month_name'] = gdf_fires['month'].map(number_to_months)
+
+    return gdf_fires
+
+
+def change_columns_order(gdf_fires):
+    # improve readability of dataframe
+    gdf_fires = gdf_fires.sort_values(by="month")
+    gdf_fires = gdf_fires.reset_index(drop=True)
+    return gdf_fires
+
+
 def df_to_csv(gdf_fires):
     return gdf_fires.to_csv('df.csv')
-
-    # # improve readability of dataframe
-    # gdf_fires = gdf_fires.sort_values(by="month")
-    # gdf_fires = gdf_fires.reset_index(drop=True)
-    # return gdf_fires
-
-df_to_csv(add_columns(make_dataframe()))
