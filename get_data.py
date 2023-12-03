@@ -105,4 +105,11 @@ def change_columns_order(gdf_fires):
 
 
 def df_to_csv(gdf_fires):
-    return gdf_fires.to_csv('df.csv')
+    print(gdf_fires.columns.to_list())
+    return gdf_fires.to_csv('df.csv',index=False)
+
+gdf_fires = make_dataframe(gdf)
+gdf_fires = add_columns(gdf_fires)
+gdf_fires = month_number_to_names(gdf_fires)
+gdf_fires = change_columns_order(gdf_fires)
+df = df_to_csv(gdf_fires)
