@@ -1,91 +1,111 @@
 import geopandas as gpd
+import pandas as pd
 
-# the number of fires in each state is needed, within a year, and then, the map with this data is needed
+# def read_file():
 gdf = gpd.read_file("WFIGS_Current_Interagency_Fire_Perimeters.geojson")
-states_us = gdf["attr_POOState"]
+#     return gdf
+# gdf['acres'] = gdf[gdf['attr_IncidentSize'] > 0]
+# print(gdf['acres'])
+# sample_data = {
+#         "attr_POOState": ["US-CA", "US-AL"],
+#         "attr_FireDiscoveryDateTime": (['2023-12-01', '2023-02-02']),
+#         'attr_IncidentSize': ([10, 4])
+# }
+# gdf = pd.DataFrame(sample_data)
 
-areas = {
-    'AK': 131171,
-    'AL': 1477953,
-    'AZ': 294207,
-    'CA': 403466,
-    'CO': 268431,
-    'HI': 16635,
-    'ID': 214045,
-    'IL': 143793,
-    'LA': 111898,
-    'MA': 20202,
-    'MI': 146435,
-    'MN': 206232,
-    'MS': 121531,
-    'MT': 376962,
-    'NM': 314161,
-    'OR': 248608,
-    'TX': 676587,
-    'UT': 212818,
-    'WA': 172119,
-}
-
-# print(len(areas))
-
-numbers = {}
-for state in states_us:
-    if state in numbers:
-        numbers[state] += 1
+def set_state_names(gdf):
+    states_us = gdf["attr_POOState"]
+    if states_us.str.startswith("US-").any():
+        gdf['state'] = states_us.replace(to_replace="US-", value="", regex=True)
     else:
-        numbers[state] = 1
+        raise ValueError("State codes are incorrect")
+
+    return gdf['state']
 
 
-# for state, count in numbers.items():
-#     print(f' {state}: {numbers[state]}')
-#
-# months_sum = []
-# for i in [6, 7, 8, 9, 10]:
-#     months = {}
-#     sorted_months = {}
-#     for j in gdf['state']:
-#         state_df = gdf[gdf['state'] == j]
-#         appearance_sum = (state_df['month'] == i).sum()
-#         months[j] = appearance_sum
-#         months = {key: val for key, val in months.items() if val != 0}
-#         months_keys = list(months.keys())
-#         months_keys = sorted(months_keys)
-#         sorted_months = {i: months[i] for i in months_keys}
-#
-#     for j in sorted_months.values():
-#         months_sum.append(j)
+def set_month(gdf):
+    try:
+        gdf['month'] = pd.to_datetime(gdf['attr_FireDiscoveryDateTime'], format='%Y-%m-%d')
+        gdf['month'] = gdf['month'].dt.month
+        return gdf['month']
+    except ValueError:
+        raise ValueError("Incorrect date format")
+
+
+def set_acres(gdf):
+    try:
+        gdf['acres'] = gdf['attr_IncidentSize'].astype(float)
+        # if gdf['acres'].gt(0):
+        #     return
+        #
+        return gdf['acres']
+    except:
+        raise ValueError("Values are smaller than 0")
 
 
 def make_dataframe(gdf):
-    states_us = gdf["attr_POOState"]
-    gdf['state'] = states_us.replace(to_replace="US-", value="", regex=True)
-
-    # retrieve month from timestamp
-    gdf['month'] = gdf['attr_FireDiscoveryDateTime'].dt.month
-    gdf['acres'] = gdf['attr_IncidentSize']
+    gdf['state'] = set_state_names(gdf)
+    gdf['month'] = set_month(gdf)
+    gdf['acres'] = set_acres(gdf)
 
     # sum the area of fires per state in a certain month
     gdf_fires = gdf.groupby(['state', 'month']).acres.sum().reset_index()
+    gdf_fires = pd.DataFrame(gdf_fires)
+
+    if pd.isna(gdf_fires.any):
+        # if gdf_fires.isna().any:
+        raise ValueError("DataFrame has empty cells")
 
     return gdf_fires
 
 
-def add_columns(gdf_fires):
+def add_columns(gdf):
+    gdf_fires = make_dataframe(gdf)
     # count the number of fires per month
     gdf_fires['number of fires'] = gdf.groupby(['state', 'month']).acres.count().reset_index()['acres']
 
     #  convert area to km2 from acres
     gdf_fires['burnt area [km2]'] = gdf_fires['acres'] * 0.004
-
+    # dict with area of each state in the df
+    areas = {
+        'AK': 131171,
+        'AL': 1477953,
+        'AZ': 294207,
+        'CA': 403466,
+        'CO': 268431,
+        'HI': 16635,
+        'ID': 214045,
+        'IL': 143793,
+        'LA': 111898,
+        'MA': 20202,
+        'MI': 146435,
+        'MN': 206232,
+        'MS': 121531,
+        'MT': 376962,
+        'NM': 314161,
+        'OR': 248608,
+        'TX': 676587,
+        'UT': 212818,
+        'WA': 172119,
+    }
     # assign size of the state to each column even if states are repeated in the dataframe
     gdf_fires['state area [km2]'] = gdf_fires['state'].map(areas, na_action='ignore')
 
     # show the scale of it in percents
     gdf_fires['burnt area [%]'] = (gdf_fires['burnt area [km2]'] / gdf_fires['state area [km2]']) * 100
+    #
+    # print(gdf_fires.dtypes)
+    # try:
+    #     if gdf_fires['burnt area [%]'].astype(float) or gdf_fires['state area [km2]'].astype(int) or gdf_fires['number of fires'].astype(int) or gdf_fires['burnt area [km2]'].astype(float) :
+    #         return gdf_fires
+    # except ValueError:
+    #     raise ValueError("Values are smaller than 0")
+
     return gdf_fires
 
 
-def month_number_to_names(gdf_fires):
+def month_number_to_names(gdf):
+    gdf_fires = add_columns(gdf)
     number_to_months = {6: 'June',
                         7: 'July',
                         8: 'August',
@@ -96,7 +116,6 @@ def month_number_to_names(gdf_fires):
 
     return gdf_fires
 
-
 def change_columns_order(gdf_fires):
     # improve readability of dataframe
     gdf_fires = gdf_fires.sort_values(by="month")
@@ -105,11 +124,9 @@ def change_columns_order(gdf_fires):
 
 
 def df_to_csv(gdf_fires):
-    print(gdf_fires.columns.to_list())
-    return gdf_fires.to_csv('df.csv',index=False)
+    return gdf_fires.to_csv('df.csv', index=False)
 
-gdf_fires = make_dataframe(gdf)
-gdf_fires = add_columns(gdf_fires)
-gdf_fires = month_number_to_names(gdf_fires)
-gdf_fires = change_columns_order(gdf_fires)
-df = df_to_csv(gdf_fires)
+
+if __name__ == '__main__':
+    print(add_columns(gdf))
+    # print(add_columns(gdf))
