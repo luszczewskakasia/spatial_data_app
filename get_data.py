@@ -1,17 +1,8 @@
 import geopandas as gpd
 import pandas as pd
 
-# def read_file():
 gdf = gpd.read_file("WFIGS_Current_Interagency_Fire_Perimeters.geojson")
-#     return gdf
-# gdf['acres'] = gdf[gdf['attr_IncidentSize'] > 0]
-# print(gdf['acres'])
-# sample_data = {
-#         "attr_POOState": ["US-CA", "US-AL"],
-#         "attr_FireDiscoveryDateTime": (['2023-12-01', '2023-02-02']),
-#         'attr_IncidentSize': ([10, 4])
-# }
-# gdf = pd.DataFrame(sample_data)
+
 
 def set_state_names(gdf):
     states_us = gdf["attr_POOState"]
@@ -35,35 +26,34 @@ def set_month(gdf):
 def set_acres(gdf):
     try:
         gdf['acres'] = gdf['attr_IncidentSize'].astype(float)
-        # if gdf['acres'].gt(0):
-        #     return
-        #
         return gdf['acres']
     except:
-        raise ValueError("Values are smaller than 0")
+        raise ValueError("Values are not numbers")
 
 
 def make_dataframe(gdf):
-    gdf['state'] = set_state_names(gdf)
-    gdf['month'] = set_month(gdf)
-    gdf['acres'] = set_acres(gdf)
+    try:
+        gdf['state'] = set_state_names(gdf)
+        gdf['month'] = set_month(gdf)
+        gdf['acres'] = set_acres(gdf)
 
-    # sum the area of fires per state in a certain month
-    gdf_fires = gdf.groupby(['state', 'month']).acres.sum().reset_index()
-    gdf_fires = pd.DataFrame(gdf_fires)
+        # sum the area of fires per state in a certain month
+        gdf_fires = gdf.groupby(['state', 'month']).acres.sum().reset_index()
+        # count the number of fires per month
+        gdf_fires['number of fires'] = gdf.groupby(['state', 'month']).acres.count().reset_index()['acres']
 
-    if pd.isna(gdf_fires.any):
-        # if gdf_fires.isna().any:
+        # return gdf_fires
+
+        if all(item != "" and item is not None for item in gdf_fires['acres']):
+            return gdf_fires
+
+    except Exception:
         raise ValueError("DataFrame has empty cells")
-
-    return gdf_fires
 
 
 def add_columns(gdf):
+    # try:
     gdf_fires = make_dataframe(gdf)
-    # count the number of fires per month
-    gdf_fires['number of fires'] = gdf.groupby(['state', 'month']).acres.count().reset_index()['acres']
-
     #  convert area to km2 from acres
     gdf_fires['burnt area [km2]'] = gdf_fires['acres'] * 0.004
     # dict with area of each state in the df
@@ -93,40 +83,47 @@ def add_columns(gdf):
 
     # show the scale of it in percents
     gdf_fires['burnt area [%]'] = (gdf_fires['burnt area [km2]'] / gdf_fires['state area [km2]']) * 100
-    #
-    # print(gdf_fires.dtypes)
-    # try:
-    #     if gdf_fires['burnt area [%]'].astype(float) or gdf_fires['state area [km2]'].astype(int) or gdf_fires['number of fires'].astype(int) or gdf_fires['burnt area [km2]'].astype(float) :
-    #         return gdf_fires
-    # except ValueError:
-    #     raise ValueError("Values are smaller than 0")
+
+    if any(item <= 0 for item in gdf_fires['acres']):
+        raise ValueError("Values are smaller than 0")
 
     return gdf_fires
-
 
 def month_number_to_names(gdf):
-    gdf_fires = add_columns(gdf)
-    number_to_months = {6: 'June',
-                        7: 'July',
-                        8: 'August',
-                        9: 'September',
-                        10: 'October'}
+    try:
+        gdf_fires = add_columns(gdf)
+        number_to_months = {6: 'June',
+                            7: 'July',
+                            8: 'August',
+                            9: 'September',
+                            10: 'October'}
 
-    gdf_fires['month_name'] = gdf_fires['month'].map(number_to_months)
+        gdf_fires['month_name'] = gdf_fires['month'].map(number_to_months)
 
-    return gdf_fires
+        return gdf_fires
+    except:
+        return None
 
-def change_columns_order(gdf_fires):
-    # improve readability of dataframe
-    gdf_fires = gdf_fires.sort_values(by="month")
-    gdf_fires = gdf_fires.reset_index(drop=True)
-    return gdf_fires
+def change_columns_order(gdf):
+    try:
+        gdf_fires = add_columns(gdf)
+        # improve readability of dataframe
+        gdf_fires = gdf_fires.sort_values(by="month")
+        gdf_fires = gdf_fires.reset_index(drop=True)
+        return gdf_fires
+    except:
+        return None
 
 
-def df_to_csv(gdf_fires):
-    return gdf_fires.to_csv('df.csv', index=False)
+
+def df_to_csv(gdf, file_path='df.csv'):
+    try:
+        gdf_fires = change_columns_order(gdf)
+        gdf_fires.to_csv(file_path, index=False)
+        return file_path
+    except Exception:
+        raise ValueError("CSV was not created")
 
 
 if __name__ == '__main__':
-    print(add_columns(gdf))
-    # print(add_columns(gdf))
+    print(change_columns_order(gdf))

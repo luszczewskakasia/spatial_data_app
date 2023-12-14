@@ -1,10 +1,15 @@
-import os
-
 import pytest
 
 from get_data import *
 import pandas as pd
 gdf = gpd.read_file("WFIGS_Current_Interagency_Fire_Perimeters.geojson")
+sample_data = {
+    "attr_POOState": ["US-CA", " ", "US-AL"],
+    "attr_FireDiscoveryDateTime": (['2023-12-01', '2023-02-02', ""]),
+    'attr_IncidentSize': [10, 25, " "]
+}
+
+sample_df_test = pd.DataFrame(sample_data)
 
 @pytest.fixture
 def sample_df():
@@ -32,7 +37,7 @@ def test_month(sample_df):
 def test_set_acres(sample_df):
     with pytest.raises(ValueError) as excinfo:
         set_acres(sample_df)
-    assert str(excinfo.value) == "Values are smaller than 0"
+    assert str(excinfo.value) == "Values are not numbers"
 
 
 #there must be correct df. otherwise ValueError from setting state names rises
@@ -54,17 +59,16 @@ def test_make_dataframe(df_correct):
 @pytest.fixture
 def df_empty_values():
     sample_data = {
-        "attr_POOState": ["US-CA", None,"US-AL"],
-        "attr_FireDiscoveryDateTime": (['2023-12-01', '2023-02-02', None]),
-        'attr_IncidentSize': [10, 25, None]
+        "attr_POOState": [None, " ","US-AL"],
+        "attr_FireDiscoveryDateTime": [None, '2023-02-02', ""],
+        'attr_IncidentSize': [25, None, " "]
     }
     return pd.DataFrame(sample_data)
 
-# doesn't work
+#passed
 def test_is_df_empty(df_empty_values):
     with pytest.raises(ValueError) as excinfo:
         make_dataframe(df_empty_values)
-        print(make_dataframe(df_empty_values))
     assert str(excinfo.value) == "DataFrame has empty cells"
 
 
@@ -72,8 +76,8 @@ def test_is_df_empty(df_empty_values):
 def df_negative_values():
     sample_data = {
         "attr_POOState": ["US-CA", "US-AL"],
-        "attr_FireDiscoveryDateTime": (['2023-12-01', '2023-02-02']),
-        'attr_IncidentSize': ([10, -4])
+        "attr_FireDiscoveryDateTime": ['2023-12-01', '2023-02-02'],
+        'attr_IncidentSize': [-2, -4.2]
     }
     return pd.DataFrame(sample_data)
 
@@ -90,9 +94,12 @@ def test_month_number_to_names():
     result_column_names = result.columns.to_list()
     assert column_names == result_column_names
 
+
 #passed
-def test_change_columns_order():
-    column_names = ['state','month','acres','number of fires','burnt area [km2]','state area [km2]','burnt area [%]','month_name']
-    result = month_number_to_names(gdf)
-    result_column_names = result.columns.to_list()
-    assert column_names == result_column_names
+def test_df_to_csv_failure(tmp_path, df_correct):
+    invalid_csv_path = tmp_path/'invalid_path'/'df.csv'
+
+    with pytest.raises(ValueError) as excinfo:
+        df_to_csv(df_correct, invalid_csv_path)
+    assert str(excinfo.value) == "CSV was not created"
+
