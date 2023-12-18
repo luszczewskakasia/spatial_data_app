@@ -1,5 +1,4 @@
 import geopandas as gpd
-import numpy as np
 import pandas as pd
 
 gdf = gpd.read_file("WFIGS_Current_Interagency_Fire_Perimeters.geojson")
@@ -45,7 +44,7 @@ def make_dataframe(gdf):
 
         # return gdf_fires
 
-        if all(item != "" and item is not None and item != np.NaNdo  for item in gdf_fires['acres']):
+        if all(item != "" and item is not None for item in gdf_fires['acres']):
             return gdf_fires
 
     except Exception:
@@ -123,7 +122,7 @@ def df_to_csv(gdf, file_path='df.csv'):
         gdf_fires.to_csv(file_path, index=False)
         return file_path
     except Exception:
-        raise TypeError("Invalid path")
+        raise ValueError("CSV was not created")
 
 
 if __name__ == '__main__':

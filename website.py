@@ -14,7 +14,11 @@ df = pd.read_csv('df.csv')
 with open("gz_2010_us_040_00_5m_1.json", 'r') as f:
     states = json.load(f)
 
-selections = set()
+number_to_months = {6: 'June',
+                    7: 'July',
+                    8: 'August',
+                    9: 'September',
+                    10: 'October'}
 
 external_stylesheets = [dbc.themes.LUX]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
@@ -49,7 +53,7 @@ app.layout = dbc.Container([
                     {'label': x, 'value': x, 'disabled': False}
                     for x in df['month_name'].unique()
                 ],
-                value=['June'],
+                value=['October'],
                 inline=True,
                 labelStyle={"display": "flex", "align-items": "center"}
 
@@ -119,11 +123,11 @@ app.layout = dbc.Container([
 )
 def update_map(selected_month):
     filtered_df = df[df['month'] == selected_month]
-    number_to_months = {6: 'June',
-                        7: 'July',
-                        8: 'August',
-                        9: 'September',
-                        10: 'October'}
+    # number_to_months = {6: 'June',
+    #                     7: 'July',
+    #                     8: 'August',
+    #                     9: 'September',
+    #                     10: 'October'}
 
     month_name = number_to_months.get(selected_month)
 
@@ -151,11 +155,6 @@ def update_map(selected_month):
 )
 def update_bar_graph(selected_month, bardropdown):
     filtered_df = df[df['month'] == selected_month]
-    number_to_months = {6: 'June',
-                        7: 'July',
-                        8: 'August',
-                        9: 'September',
-                        10: 'October'}
 
     month_name = number_to_months.get(selected_month)
     fig = px.bar(data_frame=filtered_df,

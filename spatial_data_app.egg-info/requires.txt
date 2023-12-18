@@ -1,0 +1,8 @@
+geopandas
+pandas
+pytest
+plotly
+dash
+dash-bootstrap-components
+plotly-express
+statistics

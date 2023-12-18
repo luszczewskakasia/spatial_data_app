@@ -2,14 +2,6 @@ import pytest
 
 from get_data import *
 import pandas as pd
-gdf = gpd.read_file("WFIGS_Current_Interagency_Fire_Perimeters.geojson")
-sample_data = {
-    "attr_POOState": ["US-CA", " ", "US-AL"],
-    "attr_FireDiscoveryDateTime": (['2023-12-01', '2023-02-02', ""]),
-    'attr_IncidentSize': [10, 25, " "]
-}
-
-sample_df_test = pd.DataFrame(sample_data)
 
 @pytest.fixture
 def sample_df():
@@ -27,10 +19,9 @@ def test_set_states_name(sample_df):
     assert str(excinfo.value) == "State codes are incorrect"
 
 #passed
-def test_month(sample_df):
+def test_set_month(sample_df):
     with pytest.raises(ValueError) as excinfo:
         set_month(sample_df)
-        print(sample_df)
     assert str(excinfo.value) == "Incorrect date format"
 
 #passed
@@ -99,7 +90,7 @@ def test_month_number_to_names():
 def test_df_to_csv_failure(tmp_path, df_correct):
     invalid_csv_path = tmp_path/'invalid_path'/'df.csv'
 
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(TypeError) as excinfo:
         df_to_csv(df_correct, invalid_csv_path)
-    assert str(excinfo.value) == "CSV was not created"
+    assert str(excinfo.value) == "Invalid path"
 

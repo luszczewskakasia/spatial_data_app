@@ -1,0 +1,7 @@
+README.md
+setup.py
+spatial_data_app.egg-info/PKG-INFO
+spatial_data_app.egg-info/SOURCES.txt
+spatial_data_app.egg-info/dependency_links.txt
+spatial_data_app.egg-info/requires.txt
+spatial_data_app.egg-info/top_level.txt

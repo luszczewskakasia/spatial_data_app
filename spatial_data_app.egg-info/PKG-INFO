@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: spatial-data-app
+Version: 0.1.0
+Summary: Spatial Data App
+Home-page: https://github.com/luszczewskakasia/spatial_data_app
+Author: Katarzyna Luszczewska
+Author-email: kasia.luszczewska13@gmail.com
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Requires-Dist: geopandas
+Requires-Dist: pandas
+Requires-Dist: pytest
+Requires-Dist: plotly
+Requires-Dist: dash
+Requires-Dist: dash-bootstrap-components
+Requires-Dist: plotly-express
+Requires-Dist: statistics
