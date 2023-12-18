@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'spatial_data_app'
+project = 'App to visualise spatial data'
 copyright = '2023, Katarzyna Luszczewska'
 author = 'Katarzyna Luszczewska'
 release = '0.0.1'
