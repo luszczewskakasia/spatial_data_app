@@ -122,6 +122,15 @@ app.layout = dbc.Container([
     Input('month-slider', 'value')
 )
 def update_map(selected_month):
+    """
+    Callback to update the map based on the selected month.
+
+    Parameters:
+    selected_month (int): Selected month.
+
+    Returns:
+    go.Figure: Updated map figure.
+    """
     filtered_df = df[df['month'] == selected_month]
     # number_to_months = {6: 'June',
     #                     7: 'July',
@@ -154,6 +163,16 @@ def update_map(selected_month):
      Input('bardropdown', 'value')]
 )
 def update_bar_graph(selected_month, bardropdown):
+    """
+    Callback to update the bar graph based on the selected month and data type.
+
+    Parameters:
+    - selected_month (int): Selected month.
+    - bardropdown (str): Selected data type.
+
+    Returns:
+    px.bar: Updated bar graph figure.
+    """
     filtered_df = df[df['month'] == selected_month]
 
     month_name = number_to_months.get(selected_month)
@@ -174,6 +193,15 @@ def update_bar_graph(selected_month, bardropdown):
     Input('my_checklist', 'value')
 )
 def median_months(checked_options):
+    """
+    Callback to calculate and display the median based on the selected months.
+
+    Parameters:
+    checked_options (list): List of selected months.
+
+    Returns:
+    str: Displayed median information.
+    """
     filtered_df = df[df['month_name'].isin(checked_options)]
     if not checked_options:
         return "Median is: 0"
