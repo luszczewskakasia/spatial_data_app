@@ -6,7 +6,9 @@
 App for spatial data visualisation documentation
 ============================================
 
-Below you can find all the crucial information related with running the app smoothly and correctly
+This is app for visualisation of wildfires in the US within June 2023 - October 2023. It includes one map and two bar graphs which present selected data.
+Moreover, there is possibility to get median of fires for selected months.
+
 
 .. toctree::
    :maxdepth: 2
@@ -15,12 +17,13 @@ Below you can find all the crucial information related with running the app smoo
 Getting started
 ===============
 
-To run the app you need to download ``\app`` folder from github repository to which link is below. 
+To run the app you need to download ``src\app`` folder from github repository to which link is below. 
 Then install all the requirements from ``requirements.txt`` file by doing the following:::
 
    pip install -r requirements.txt
 
-Finally, run ``website.py`` and it generates the link which allows ou to open the app in the browser.
+Finally, run ``app.py`` and it generates the link which allows ou to open the app in the browser.
+The explanation of each function can be found at Github repository below each function in docstrings. 
 
 Links
 ==================
