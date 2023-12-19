@@ -5,6 +5,7 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+import sphinx_rtd_theme
 
 project = 'App to visualise spatial data'
 copyright = '2023, Katarzyna Luszczewska'
