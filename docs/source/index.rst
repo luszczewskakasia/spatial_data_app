@@ -22,7 +22,7 @@ Then install all the requirements from ``requirements.txt`` file by doing the fo
 
    pip install -r requirements.txt
 
-Finally, run ``app.py`` using the command below:
+Finally, run ``app.py`` using the command below: ::
 
    python app.py 
 
