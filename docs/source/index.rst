@@ -15,11 +15,15 @@ Below you can find all the crucial information related with running the app smoo
 Getting started
 ===============
 
-To run the app you need to download 
+To run the app you need to download ``\app`` folder from github repository to which link is below. 
+Then install all the requirements from ``requirements.txt`` file by doing the following:::
 
+   pip install -r requirements.txt
+
+Finally, run ``website.py`` and it generates the link which allows ou to open the app in the browser.
 
 Links
 ==================
 
-* Source code: https://github.com/luszczewskakasia/spatial_data_app
+* Github repository: https://github.com/luszczewskakasia/spatial_data_app
 * :ref:`search`
