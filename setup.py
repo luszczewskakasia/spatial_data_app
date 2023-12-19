@@ -19,6 +19,7 @@ setup(
         'dash-bootstrap-components',
         'plotly-express',
         'statistics', 
+        'sphinx_rtd_theme'
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
