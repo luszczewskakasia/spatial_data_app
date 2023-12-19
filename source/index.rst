@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to spatial_data_app's documentation!
+Welcome to documentation of app for spatial data visualisation!
 ============================================
 
 .. toctree::
@@ -12,9 +12,10 @@ Welcome to spatial_data_app's documentation!
 
 
 
-Indices and tables
+Links
 ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+* Source code: https://github.com/luszczewskakasia/spatial_data_app
