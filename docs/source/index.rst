@@ -17,7 +17,7 @@ Moreover, there is possibility to get median of fires for selected months.
 Getting started
 ===============
 
-To run the app you need to download ``src\app`` folder from github repository to which link is below. 
+To run the app you need to download ``src`` folder from github repository to which link is below. 
 Then install all the requirements from ``requirements.txt`` file by doing the following:::
 
    pip install -r requirements.txt
