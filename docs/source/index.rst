@@ -22,7 +22,11 @@ Then install all the requirements from ``requirements.txt`` file by doing the fo
 
    pip install -r requirements.txt
 
-Finally, run ``app.py`` and it generates the link which allows ou to open the app in the browser.
+Finally, run ``app.py`` using the command below:
+
+   python app.py 
+
+and it generates the link which allows ou to open the app in the browser.
 The explanation of each function can be found at Github repository below each function in docstrings. 
 
 Links
