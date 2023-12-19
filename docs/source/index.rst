@@ -17,7 +17,5 @@ Below you can find the source code with all the import files you need to run the
 Links
 ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 * Source code: https://github.com/luszczewskakasia/spatial_data_app
