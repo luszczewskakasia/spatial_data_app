@@ -6,6 +6,8 @@
 Welcome to documentation of app for spatial data visualisation!
 ============================================
 
+Below you can find the source code with all the import files you need to run the app smoothly and correctly.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
